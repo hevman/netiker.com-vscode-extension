@@ -1,0 +1,16 @@
+.git/**
+.github/**
+.vscode/**
+node_modules/**
+src/**
+test/**
+artifacts/**
+*.vsix
+tsconfig.json
+esbuild.mjs
+package-lock.json
+dist/*.map
+dist/host-smoke.cjs
+.gitignore
+scripts/**
+.vscode-test/**

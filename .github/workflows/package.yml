@@ -1,0 +1,26 @@
+name: Package VS Code extension
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: xvfb-run -a npm run test:host
+      - run: npm run package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: netiker-vsix
+          path: artifacts/*.vsix

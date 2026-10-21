@@ -1,0 +1,175 @@
+{
+  "name": "netiker",
+  "displayName": "Netiker",
+  "description": "Your Netiker reports, connected data and sync history in Visual Studio Code and GitHub Copilot.",
+  "version": "0.1.0",
+  "publisher": "hevman",
+  "license": "SEE LICENSE IN LICENSE",
+  "engines": {
+    "vscode": "^1.109.0"
+  },
+  "categories": [
+    "AI",
+    "Data Science",
+    "Other"
+  ],
+  "keywords": [
+    "netiker",
+    "mcp",
+    "seo",
+    "search console",
+    "bing",
+    "copilot"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hevman/netiker.com-vscode-extension.git"
+  },
+  "homepage": "https://netiker.com",
+  "bugs": {
+    "url": "https://github.com/hevman/netiker.com-vscode-extension/issues"
+  },
+  "icon": "assets/icon.png",
+  "main": "./dist/extension.cjs",
+  "extensionKind": [
+    "ui"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": true
+  },
+  "activationEvents": [
+    "onView:netiker.reports",
+    "onMcpServerDefinitionProvider:netiker.mcp"
+  ],
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "node esbuild.mjs",
+    "test": "node --import tsx --test test/*.test.ts",
+    "test:host": "npm run build && node scripts/host-test.mjs",
+    "vscode:prepublish": "npm run check && npm run build",
+    "package": "node -e \"require('node:fs').mkdirSync('artifacts',{recursive:true})\" && vsce package --no-dependencies --out artifacts/netiker-0.1.0.vsix"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "netiker.signIn",
+        "title": "Sign in",
+        "category": "Netiker",
+        "icon": "$(sign-in)"
+      },
+      {
+        "command": "netiker.signOut",
+        "title": "Sign out",
+        "category": "Netiker"
+      },
+      {
+        "command": "netiker.refresh",
+        "title": "Reload saved reports",
+        "category": "Netiker",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "netiker.openReport",
+        "title": "Open report metadata",
+        "category": "Netiker"
+      },
+      {
+        "command": "netiker.readRows",
+        "title": "Read report rows",
+        "category": "Netiker",
+        "icon": "$(table)"
+      },
+      {
+        "command": "netiker.askCopilot",
+        "title": "Ask Copilot about this report",
+        "category": "Netiker",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "netiker.openWorkspace",
+        "title": "Open workspace in browser",
+        "category": "Netiker",
+        "icon": "$(link-external)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "netiker",
+          "title": "Netiker",
+          "icon": "assets/activity.svg"
+        }
+      ]
+    },
+    "views": {
+      "netiker": [
+        {
+          "id": "netiker.reports",
+          "name": "Reports"
+        },
+        {
+          "id": "netiker.syncRuns",
+          "name": "Synchronization history"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "netiker.reports",
+        "contents": "Connect your Netiker account to browse saved reports.\n[Sign in to Netiker](command:netiker.signIn)\n[Open workspace](command:netiker.openWorkspace)",
+        "when": "!netiker.signedIn"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "netiker.refresh",
+          "when": "view == netiker.reports && netiker.signedIn",
+          "group": "navigation"
+        },
+        {
+          "command": "netiker.signIn",
+          "when": "view == netiker.reports && !netiker.signedIn",
+          "group": "navigation"
+        },
+        {
+          "command": "netiker.signOut",
+          "when": "view == netiker.reports && netiker.signedIn"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "netiker.readRows",
+          "when": "view == netiker.reports && viewItem == report",
+          "group": "inline"
+        },
+        {
+          "command": "netiker.askCopilot",
+          "when": "view == netiker.reports && viewItem == report",
+          "group": "inline"
+        }
+      ]
+    },
+    "mcpServerDefinitionProviders": [
+      {
+        "id": "netiker.mcp",
+        "label": "Netiker"
+      }
+    ]
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "1.109.0",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.25.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.9.0"
+  }
+}
